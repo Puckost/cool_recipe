@@ -1,0 +1,71 @@
+<!-- include header -->
+<%- include('blocks/_header') %>
+
+<!-- include navigation -->
+<%- include('blocks/_navigation') %>
+
+<!-- include hero -->
+<%- include('blocks/_hero') %>
+
+<!-- Section-->
+<section class="py-5">
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-1 row-col-lg-2 row-cols-xl-2 justify-content-center">
+
+            <form method="POST" action="/api/recipes" id="add_recipe" enctype="multipart/form-data">
+                <!-- Title -->
+                <div class="form-outline mb-4">
+                    <label class="form-label" for="title">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" value="" />
+                </div>
+
+                <!-- Ingredients -->
+                <div class="form-outline mb-4 ingrediens-container">
+                    <label class="form-label" for="ingredients">Ingredients</label>
+                    <input type="text" class="form-control mb-1" name="ingredients[]" placeholder="Ingredient" value="" />
+                    <div class="input-group mb-1 ingredient-row">
+                        <input type="text" class="form-control" name="ingredients[]" placeholder="Ingredient" aria-label="Ingredient">
+                        <button class="btn btn-outline-secondary" type="button"><i class="bi bi-trash"></i></button>
+                    </div>
+
+                    <div class="append-here">
+                    </div>
+
+                    <div class="ingredient-row-copy d-none">
+                        <div class="input-group mb-1">
+                            <input type="text" class="form-control" name="ingredients[]" placeholder="Ingredient" aria-label="Ingredient">
+                            <button class="btn btn-outline-secondary" type="button"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </div>
+
+                    <a class="text-decoration-none" href=""><i class="bi bi-plus"></i> Add</a>
+
+                </div>
+
+                <!-- Description -->
+                <div class="form-outline mb-4">
+                    <label class="form-label" for="description">Description</label>
+                    <textarea class="form-control" name="description" id="description" rows="4"></textarea>
+
+                </div>
+
+                <!-- Image -->
+                <div class="form-outline mb-4 browse-image-preview">
+                    <label class="form-label" for="image">Image</label>
+                    <input type="file" class="form-control" id="image" name="image" value="" />
+
+                    <div class="image-preview">
+                        <img src="">
+                    </div>
+
+                </div>
+
+                <!-- Submit button -->
+                <button type="submit" class="btn btn-primary btn-block mb-4">Save</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- include footer -->
+<%- include('blocks/_footer') %>

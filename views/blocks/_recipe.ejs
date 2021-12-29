@@ -1,0 +1,181 @@
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container px-4 px-lg-5">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent1" aria-controls="navbarSupportedContent1" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent1">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+
+                <!-- New recipe -->
+                <li class="nav-item">
+                    <a class="btn btn-success btn-block" href="/add-recipe"><i class="bi bi-plus"></i> New recipe</a>
+                </li>
+
+                <!-- Sort -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Sort by:</a>
+                    <ul class="dropdown-menu search-filter-sort" aria-labelledby="navbarDropdown">
+                        <li>
+                            <a class="dropdown-item" href="" data-params="sort=createdAt&direction=1">
+                                Oldest
+                                <% if(recipes.getParams.sort === 'createdAt' && recipes.getParams.direction === '1') { %>
+                                    <i class="bi bi-check _checked"></i>
+                                <% } %>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="" data-params="sort=createdAt&direction=-1">
+                                Newest
+                                <% if(recipes.getParams.sort === 'createdAt' && recipes.getParams.direction === '-1') { %>
+                                    <i class="bi bi-check _checked"></i>
+                                <% } %>
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li>
+                            <a class="dropdown-item" href="" data-params="sort=title&direction=1">
+                                Title asc
+                                <% if(recipes.getParams.sort === 'title' && recipes.getParams.direction === '1') { %>
+                                    <i class="bi bi-check _checked"></i>
+                                <% } %>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="" data-params="sort=title&direction=-1">
+                                Title desc
+                                <% if(recipes.getParams.sort === 'title' && recipes.getParams.direction === '-1') { %>
+                                    <i class="bi bi-check _checked"></i>
+                                <% } %>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- Search -->
+            <form class="d-flex search-form">
+                <div class="input-group mb-2">
+                    <input type="text" class="form-control" aria-label="Text input with dropdown button" value="<%= recipes.getParams.frase %>">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filter</button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+
+                        <!-- Title -->
+                        <li>
+                            <a class="dropdown-item" href="" data-params="title">
+                            Title
+                            <% if(typeof recipes.getParams.title != 'undefined') { %>
+                                <i class="bi bi-check"></i>
+                            <% } %>
+                        </a>
+                        </li>
+
+                        <!-- Ingredients -->
+                        <li>
+                            <a class="dropdown-item" href="" data-params="ingredient">
+                                Ingredients
+                                <% if(typeof recipes.getParams.ingredient != 'undefined') { %>
+                                    <i class="bi bi-check"></i>
+                                <% } %>
+                            </a>
+                        </li>
+
+                        <li><hr class="dropdown-divider"></li>
+
+                        <!-- Both -->
+                        <li><a class="dropdown-item" href="" data-params="title,ingredient">Both</a></li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="row gx-4 gx-lg-5 row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-xl-3 justify-content-center mt-5">
+<% var _recipes = recipes.recipes %>
+
+<% for(var i = 0; i < _recipes.length; i++) { %>
+
+    <div class="col mb-5">
+        <div class="card h-100 recipe">
+
+            <!-- Recipe image-->
+            <% if(_recipes[i].image != '') { %>
+                <img class="card-img-top" src="/uploads/resized/<%= _recipes[i].image %>" alt="..." />
+            <% } else { %>
+                <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+            <% } %>
+
+            <!-- Recipe details-->
+            <div class="card-body p-4 pt-2">
+                <div class="text-center mb-4">
+                    <small>Created: <%= moment(_recipes[i].createdAt).format('YYYY-MM-DD HH:mm') %></small>
+                    <!-- Recipe title-->
+                    <h5 class="fw-bolder mt-2"><%= _recipes[i].title %></h5>
+                </div>
+
+                <!-- Recipe ingredients-->
+                <div class="text-left">
+                    <ul>
+                        <% for(var j = 0; j < _recipes[i].ingredients.length; j++) { %>
+                            <li><%= _recipes[i].ingredients[j] %></li>
+                        <% } %>
+                    </ul>
+                </div>
+                <span><%= _recipes[i].description %></span>
+
+            </div>
+
+            <div class="btn-group m-3" role="group" aria-label="Basic mixed styles example">
+                <a class="btn btn-primary" href="/update-recipe?id=<%= _recipes[i]._id %>"> <i class="bi bi-pen"></i> Edit</a>
+                <a class="btn btn-danger delete" data-id=<%= _recipes[i]._id %>><i class="bi bi-trash"></i> Delete</a>
+            </div>
+        </div>
+    </div>
+<% } %>
+
+<% if(_recipes.length === 0) { %>
+    <div class="col mb-5 text-center">
+        No recipes found :(
+    </div>
+<% } %>
+
+</div>
+
+<% if(_recipes.length > 0) { %>
+    <% var url = 'http://localhost:3000/' %>
+    <%
+        let params = '';
+
+        Object.keys(recipes.getParams).forEach(function(key) {
+            let v = recipes.getParams[key];
+            if(key === 'page' || key === 'limit') {
+                return;
+            }
+            else {
+                params += `&${key}=${v}`;
+            }
+        });
+    %>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <% if(recipes.hasPrevPage) { %>
+                <li class="page-item"><a class="page-link" href="<%= `${url}?page=${recipes.prevPage}&limit=${recipes.limit}${params}` %>" >Previous</a></li>
+            <% } else { %>
+                <li class="page-item disabled"><a class="page-link" disabled>Previous</a></li>
+            <% } %>
+            <% for(var i = 1; i <= recipes.totalPages; i++) { %>
+                <li class="page-item <%= i === recipes.page ? 'active' : '' %>">
+                    <a class="page-link" href="<%= `${url}?page=${i}&limit=${recipes.limit}${params}` %>">
+                        <%= i %>
+                    </a>
+                </li>
+            <% } %>
+            <% if(recipes.hasNextPage) { %>
+                <li class="page-item"><a class="page-link" href="<%= `${url}?page=${recipes.nextPage}&limit=${recipes.limit}${params}` %>">Next</a></li>
+            <% } else { %>
+                <li class="page-item disabled"><a class="page-link">Next</a></li>
+            <% } %>
+        </ul>
+    </nav>
+    Total: <%= recipes.totalRecipes %>
+    <% console.log(recipes); %>
+<% } %>
